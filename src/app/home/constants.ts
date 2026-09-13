@@ -10,12 +10,15 @@ import { deepClone } from "lib/deep-clone";
 export const END_HOME_RESUME: Resume = {
   profile: {
     name: "John Doe",
+    age: "23 岁",
+    workYears: "4年",
+    education: "本科",
     summary:
       "Software engineer obsessed with building exceptional products that people love",
     email: "hello@openresume.com",
     phone: "123-456-7890",
-    location: "NYC, NY",
     url: "linkedin.com/in/john-doe",
+    blogUrl: "blog.openresume.com",
   },
   workExperiences: [
     {
@@ -65,6 +68,9 @@ export const END_HOME_RESUME: Resume = {
     {
       project: "OpenResume",
       date: "Spring 2023",
+      summary:
+        "A free resume builder that helps job seekers create clear, professional resumes in minutes.",
+      techStack: "Next.js / TypeScript / Redux Toolkit / React PDF",
       descriptions: [
         "Created and launched a free resume builder web app that allows thousands of users to create professional resume easily and land their dream jobs",
       ],

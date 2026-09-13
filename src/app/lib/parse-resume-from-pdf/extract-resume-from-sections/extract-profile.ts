@@ -92,15 +92,6 @@ const PHONE_FEATURE_SETS: FeatureSet[] = [
   [hasLetter, -4], // Name, Email, Location, Url, Summary
 ];
 
-// Location -> match location regex <City>, <ST>
-const LOCATION_FEATURE_SETS: FeatureSet[] = [
-  [matchCityAndState, 4, true],
-  [isBold, -1], // Name
-  [hasAt, -4], // Email
-  [hasParenthesis, -3], // Phone
-  [hasSlash, -4], // Url
-];
-
 // URL -> match url regex xxx.xxx/xxx
 const URL_FEATURE_SETS: FeatureSet[] = [
   [matchUrl, 4, true],
@@ -138,10 +129,6 @@ export const extractProfile = (sections: ResumeSectionToLines) => {
     textItems,
     PHONE_FEATURE_SETS
   );
-  const [location, locationScores] = getTextWithHighestFeatureScore(
-    textItems,
-    LOCATION_FEATURE_SETS
-  );
   const [url, urlScores] = getTextWithHighestFeatureScore(
     textItems,
     URL_FEATURE_SETS
@@ -167,10 +154,13 @@ export const extractProfile = (sections: ResumeSectionToLines) => {
   return {
     profile: {
       name,
+      age: "",
+      workYears: "",
+      education: "",
       email,
       phone,
-      location,
       url,
+      blogUrl: "",
       // Dedicated section takes higher precedence over profile summary
       summary: summarySection || objectiveSection || summary,
     },
@@ -179,7 +169,6 @@ export const extractProfile = (sections: ResumeSectionToLines) => {
       name: nameScores,
       email: emailScores,
       phone: phoneScores,
-      location: locationScores,
       url: urlScores,
       summary: summaryScores,
     },

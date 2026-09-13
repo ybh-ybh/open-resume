@@ -5,6 +5,7 @@ import { StyleSheet } from "@react-pdf/renderer";
 export const spacing = {
   0: "0",
   0.5: "1.5pt",
+  0.25: "0.75pt",
   1: "3pt",
   1.5: "4.5pt",
   2: "6pt",
@@ -40,6 +41,27 @@ export const spacing = {
   full: "100%",
 } as const;
 
+/** 图三风格使用的固定中性色与强调色 */
+export const resumeColors = {
+  ink: "#18222C",
+  body: "#344454",
+  muted: "#667788",
+  border: "#DCE7EE",
+  surface: "#F3F7FA",
+  dateSurface: "#EAF5FA",
+  dateText: "#3B86A9",
+  achievement: "#D94C48",
+  white: "#FFFFFF",
+} as const;
+
+/** A4 中文技术简历的页面留白 */
+export const resumeLayout = {
+  pagePaddingX: "28pt",
+  pagePaddingTop: "22pt",
+  pagePaddingBottom: "24pt",
+} as const;
+
+/** PDF 与 iframe 预览共用的基础布局样式 */
 export const styles = StyleSheet.create({
   flexRow: {
     display: "flex",
@@ -55,8 +77,8 @@ export const styles = StyleSheet.create({
     flexDirection: "column",
   },
   icon: {
-    width: "13pt",
-    height: "13pt",
-    fill: "#525252", // text-neutral-600
+    width: "10pt",
+    height: "10pt",
+    fill: resumeColors.ink,
   },
 });

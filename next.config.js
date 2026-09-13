@@ -1,11 +1,25 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  // 中文字体体积较大，禁止浏览器写入磁盘缓存，避免 React PDF 加载失败。
+  async headers() {
+    return [
+      {
+        source: "/fonts/:font*.ttf",
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "no-store",
+          },
+        ],
+      },
+    ];
+  },
   // Nextjs has an issue with pdfjs-dist which optionally uses the canvas package
   // for Node.js compatibility. This causes a "Module parse failed" error when
   // building the app. Since pdfjs-dist is only used on client side, we disable
   // the canvas package for webpack
   // https://github.com/mozilla/pdf.js/issues/16214
-  output: 'standalone',
+  output: "standalone",
   webpack: (config) => {
     // Setting resolve.alias to false tells webpack to ignore a module
     // https://webpack.js.org/configuration/resolve/#resolvealias

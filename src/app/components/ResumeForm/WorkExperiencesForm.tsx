@@ -18,7 +18,7 @@ export const WorkExperiencesForm = () => {
   const showDelete = workExperiences.length > 1;
 
   return (
-    <Form form="workExperiences" addButtonText="Add Job">
+    <Form form="workExperiences" addButtonText="添加工作">
       {workExperiences.map(({ company, jobTitle, date, descriptions }, idx) => {
         const handleWorkExperienceChange = (
           ...[
@@ -42,37 +42,37 @@ export const WorkExperiencesForm = () => {
             showMoveUp={showMoveUp}
             showMoveDown={showMoveDown}
             showDelete={showDelete}
-            deleteButtonTooltipText="Delete job"
+            deleteButtonTooltipText="删除工作"
           >
             <Input
-              label="Company"
+              label="公司"
               labelClassName="col-span-full"
               name="company"
-              placeholder="Khan Academy"
+              placeholder="可汗学院"
               value={company}
               onChange={handleWorkExperienceChange}
             />
             <Input
-              label="Job Title"
+              label="职位"
               labelClassName="col-span-4"
               name="jobTitle"
-              placeholder="Software Engineer"
+              placeholder="软件工程师"
               value={jobTitle}
               onChange={handleWorkExperienceChange}
             />
             <Input
-              label="Date"
+              label="日期"
               labelClassName="col-span-2"
               name="date"
-              placeholder="Jun 2022 - Present"
+              placeholder="2022年6月 - 至今"
               value={date}
               onChange={handleWorkExperienceChange}
             />
             <BulletListTextarea
-              label="Description"
+              label="工作成果"
               labelClassName="col-span-full"
               name="descriptions"
-              placeholder="Bullet points"
+              placeholder="每行一项，建议使用“成果标题：具体说明”"
               value={descriptions}
               onChange={handleWorkExperienceChange}
             />

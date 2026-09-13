@@ -8,7 +8,7 @@ export const THEME_COLORS = [
   "#22c55e", // Green-500
   "#15803d", // Green-700
   "#38bdf8", // Sky-400
-  "#0ea5e9", // Sky-500
+  "#1687C8", // Sky-500
   "#818cf8", // Indigo-400
   "#6366f1", // Indigo-500
 ];

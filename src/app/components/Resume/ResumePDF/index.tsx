@@ -1,12 +1,16 @@
 import { Page, View, Document } from "@react-pdf/renderer";
-import { styles, spacing } from "components/Resume/ResumePDF/styles";
+import {
+  resumeColors,
+  resumeLayout,
+  styles,
+} from "components/Resume/ResumePDF/styles";
 import { ResumePDFProfile } from "components/Resume/ResumePDF/ResumePDFProfile";
 import { ResumePDFWorkExperience } from "components/Resume/ResumePDF/ResumePDFWorkExperience";
 import { ResumePDFEducation } from "components/Resume/ResumePDF/ResumePDFEducation";
 import { ResumePDFProject } from "components/Resume/ResumePDF/ResumePDFProject";
 import { ResumePDFSkills } from "components/Resume/ResumePDF/ResumePDFSkills";
 import { ResumePDFCustom } from "components/Resume/ResumePDF/ResumePDFCustom";
-import { DEFAULT_FONT_COLOR } from "lib/redux/settingsSlice";
+import { DEFAULT_THEME_COLOR } from "lib/redux/settingsSlice";
 import type { Settings, ShowForm } from "lib/redux/settingsSlice";
 import type { Resume } from "lib/redux/types";
 import { SuppressResumePDFErrorMessage } from "components/Resume/ResumePDF/common/SuppressResumePDFErrorMessage";
@@ -47,7 +51,8 @@ export const ResumePDF = ({
     formsOrder,
     showBulletPoints,
   } = settings;
-  const themeColor = settings.themeColor || DEFAULT_FONT_COLOR;
+  // 未配置自定义颜色时使用图三风格的标准主蓝。
+  const themeColor = settings.themeColor || DEFAULT_THEME_COLOR;
 
   const showFormsOrder = formsOrder.filter((form) => formToShow[form]);
 
@@ -99,24 +104,19 @@ export const ResumePDF = ({
           size={documentSize === "A4" ? "A4" : "LETTER"}
           style={{
             ...styles.flexCol,
-            color: DEFAULT_FONT_COLOR,
+            color: resumeColors.body,
             fontFamily,
             fontSize: fontSize + "pt",
+            backgroundColor: resumeColors.white,
           }}
         >
-          {Boolean(settings.themeColor) && (
-            <View
-              style={{
-                width: spacing["full"],
-                height: spacing[3.5],
-                backgroundColor: themeColor,
-              }}
-            />
-          )}
           <View
             style={{
               ...styles.flexCol,
-              padding: `${spacing[0]} ${spacing[20]}`,
+              paddingTop: resumeLayout.pagePaddingTop,
+              paddingRight: resumeLayout.pagePaddingX,
+              paddingBottom: resumeLayout.pagePaddingBottom,
+              paddingLeft: resumeLayout.pagePaddingX,
             }}
           >
             <ResumePDFProfile

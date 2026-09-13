@@ -13,11 +13,14 @@ import type { ShowForm } from "lib/redux/settingsSlice";
 
 export const initialProfile: ResumeProfile = {
   name: "",
+  age: "",
+  workYears: "",
+  education: "",
   summary: "",
   email: "",
   phone: "",
-  location: "",
   url: "",
+  blogUrl: "",
 };
 
 export const initialWorkExperience: ResumeWorkExperience = {
@@ -38,6 +41,8 @@ export const initialEducation: ResumeEducation = {
 export const initialProject: ResumeProject = {
   project: "",
   date: "",
+  summary: "",
+  techStack: "",
   descriptions: [],
 };
 

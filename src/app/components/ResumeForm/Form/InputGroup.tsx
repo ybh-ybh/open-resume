@@ -126,8 +126,8 @@ const BulletListTextareaGeneral = <T extends string>({
     <InputGroupWrapper label={label} className={wrapperClassName}>
       <ContentEditable
         contentEditable={true}
-        className={`${INPUT_CLASS_NAME} cursor-text [&>div]:list-item ${
-          showBulletPoints ? "pl-7" : "[&>div]:list-['']"
+        className={`${INPUT_CLASS_NAME} cursor-text ${
+          showBulletPoints ? "pl-3" : ""
         }`}
         // Note: placeholder currently doesn't work
         placeholder={placeholder}
@@ -223,7 +223,8 @@ const getTextareaValueFromBulletListStrings = (
   bulletListStrings: string[],
   showBulletPoints: boolean
 ) => {
-  const prefix = showBulletPoints ? "• " : "";
+  // Markdown 短横线由用户内容自行提供，不再注入默认圆点。
+  const prefix = "";
 
   if (bulletListStrings.length === 0) {
     return prefix;

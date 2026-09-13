@@ -61,10 +61,13 @@ export const ResumeTable = ({ resume }: { resume: Resume }) => {
       <tbody className="divide-y text-left align-top">
         <TableRowHeader>Profile</TableRowHeader>
         <TableRow label="Name" value={resume.profile.name} />
+        <TableRow label="Age" value={resume.profile.age} />
+        <TableRow label="Work Years" value={resume.profile.workYears} />
+        <TableRow label="Education" value={resume.profile.education} />
         <TableRow label="Email" value={resume.profile.email} />
         <TableRow label="Phone" value={resume.profile.phone} />
-        <TableRow label="Location" value={resume.profile.location} />
-        <TableRow label="Link" value={resume.profile.url} />
+        <TableRow label="GitHub" value={resume.profile.url} />
+        <TableRow label="Blog" value={resume.profile.blogUrl} />
         <TableRow label="Summary" value={resume.profile.summary} />
         <TableRowHeader>Education</TableRowHeader>
         {educations.map((education, idx) => (

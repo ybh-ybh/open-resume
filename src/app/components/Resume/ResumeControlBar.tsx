@@ -56,7 +56,7 @@ const ResumeControlBar = ({
             checked={scaleOnResize}
             onChange={() => setScaleOnResize((prev) => !prev)}
           />
-          <span className="select-none">Autoscale</span>
+          <span className="select-none">自动缩放</span>
         </label>
       </div>
       <a
@@ -65,7 +65,7 @@ const ResumeControlBar = ({
         download={fileName}
       >
         <ArrowDownTrayIcon className="h-4 w-4" />
-        <span className="whitespace-nowrap">Download Resume</span>
+        <span className="whitespace-nowrap">下载简历</span>
       </a>
     </div>
   );

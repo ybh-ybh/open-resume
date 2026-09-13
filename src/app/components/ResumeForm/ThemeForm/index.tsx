@@ -33,12 +33,12 @@ export const ThemeForm = () => {
         <div className="flex items-center gap-2">
           <Cog6ToothIcon className="h-6 w-6 text-gray-600" aria-hidden="true" />
           <h1 className="text-lg font-semibold tracking-wide text-gray-900 ">
-            Resume Setting
+            简历设置
           </h1>
         </div>
         <div>
           <InlineInput
-            label="Theme Color"
+            label="主题颜色"
             name="themeColor"
             value={settings.themeColor}
             placeholder={DEFAULT_THEME_COLOR}
@@ -64,7 +64,7 @@ export const ThemeForm = () => {
           </div>
         </div>
         <div>
-          <InputGroupWrapper label="Font Family" />
+          <InputGroupWrapper label="字体" />
           <FontFamilySelectionsCSR
             selectedFontFamily={fontFamily}
             themeColor={themeColor}
@@ -73,7 +73,7 @@ export const ThemeForm = () => {
         </div>
         <div>
           <InlineInput
-            label="Font Size (pt)"
+            label="字号（pt）"
             name="fontSize"
             value={fontSize}
             placeholder="11"
@@ -87,7 +87,7 @@ export const ThemeForm = () => {
           />
         </div>
         <div>
-          <InputGroupWrapper label="Document Size" />
+          <InputGroupWrapper label="纸张大小" />
           <DocumentSizeSelections
             themeColor={themeColor}
             selectedDocumentSize={documentSize}

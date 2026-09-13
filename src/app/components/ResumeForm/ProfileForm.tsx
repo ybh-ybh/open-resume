@@ -7,7 +7,17 @@ import { ResumeProfile } from "lib/redux/types";
 export const ProfileForm = () => {
   const profile = useAppSelector(selectProfile);
   const dispatch = useAppDispatch();
-  const { name, email, phone, url, summary, location } = profile;
+  const {
+    name,
+    age,
+    email,
+    phone,
+    url,
+    blogUrl,
+    summary,
+    workYears,
+    education,
+  } = profile;
 
   const handleProfileChange = (field: keyof ResumeProfile, value: string) => {
     dispatch(changeProfile({ field, value }));
@@ -17,23 +27,31 @@ export const ProfileForm = () => {
     <BaseForm>
       <div className="grid grid-cols-6 gap-3">
         <Input
-          label="Name"
-          labelClassName="col-span-full"
+          label="姓名"
+          labelClassName="col-span-4"
           name="name"
-          placeholder="Sal Khan"
+          placeholder="张三"
           value={name}
           onChange={handleProfileChange}
         />
+        <Input
+          label="年龄"
+          labelClassName="col-span-2"
+          name="age"
+          placeholder="23 岁"
+          value={age}
+          onChange={handleProfileChange}
+        />
         <Textarea
-          label="Objective"
+          label="个人简介"
           labelClassName="col-span-full"
           name="summary"
-          placeholder="Entrepreneur and educator obsessed with making education free for anyone"
+          placeholder="热衷让教育对任何人免费的创业者和教育工作者"
           value={summary}
           onChange={handleProfileChange}
         />
         <Input
-          label="Email"
+          label="邮箱"
           labelClassName="col-span-4"
           name="email"
           placeholder="hello@khanacademy.org"
@@ -41,7 +59,7 @@ export const ProfileForm = () => {
           onChange={handleProfileChange}
         />
         <Input
-          label="Phone"
+          label="电话"
           labelClassName="col-span-2"
           name="phone"
           placeholder="(123)456-7890"
@@ -49,19 +67,35 @@ export const ProfileForm = () => {
           onChange={handleProfileChange}
         />
         <Input
-          label="Website"
-          labelClassName="col-span-4"
+          label="GitHub链接"
+          labelClassName="col-span-2"
           name="url"
-          placeholder="linkedin.com/in/khanacademy"
+          placeholder="github.com/username"
           value={url}
           onChange={handleProfileChange}
         />
         <Input
-          label="Location"
+          label="工作年限"
+          labelClassName="col-span-1"
+          name="workYears"
+          placeholder="4年"
+          value={workYears}
+          onChange={handleProfileChange}
+        />
+        <Input
+          label="学历"
+          labelClassName="col-span-1"
+          name="education"
+          placeholder="本科"
+          value={education}
+          onChange={handleProfileChange}
+        />
+        <Input
+          label="个人博客"
           labelClassName="col-span-2"
-          name="location"
-          placeholder="NYC, NY"
-          value={location}
+          name="blogUrl"
+          placeholder="blog.example.com"
+          value={blogUrl}
           onChange={handleProfileChange}
         />
       </div>

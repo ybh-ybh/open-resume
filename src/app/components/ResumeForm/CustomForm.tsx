@@ -28,10 +28,10 @@ export const CustomForm = () => {
       <div className="col-span-full grid grid-cols-6 gap-3">
         <div className="relative col-span-full">
           <BulletListTextarea
-            label="Custom Textbox"
+            label="自定义文本框"
             labelClassName="col-span-full"
             name="descriptions"
-            placeholder="Bullet points"
+            placeholder="要点"
             value={descriptions}
             onChange={handleCustomChange}
             showBulletPoints={showBulletPoints}

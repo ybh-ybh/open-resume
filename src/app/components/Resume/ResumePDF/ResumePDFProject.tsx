@@ -1,12 +1,19 @@
-import { View } from "@react-pdf/renderer";
+import { Text, View } from "@react-pdf/renderer";
 import {
+  ResumePDFNumberedList,
   ResumePDFSection,
-  ResumePDFBulletList,
+  ResumePDFSubsectionHeader,
+  ResumePDFSummaryBlock,
   ResumePDFText,
 } from "components/Resume/ResumePDF/common";
-import { styles, spacing } from "components/Resume/ResumePDF/styles";
+import {
+  resumeColors,
+  spacing,
+  styles,
+} from "components/Resume/ResumePDF/styles";
 import type { ResumeProject } from "lib/redux/types";
 
+/** 渲染项目标题、概述、技术栈和成果，信息层级对齐参考图三 */
 export const ResumePDFProject = ({
   heading,
   projects,
@@ -15,25 +22,46 @@ export const ResumePDFProject = ({
   heading: string;
   projects: ResumeProject[];
   themeColor: string;
-}) => {
-  return (
-    <ResumePDFSection themeColor={themeColor} heading={heading}>
-      {projects.map(({ project, date, descriptions }, idx) => (
-        <View key={idx}>
+}) => (
+  <ResumePDFSection themeColor={themeColor} heading={heading}>
+    {projects.map(
+      ({ project, date, summary, techStack, descriptions }, idx) => (
+        <View
+          key={idx}
+          style={{
+            paddingBottom: idx < projects.length - 1 ? spacing[3] : 0,
+            borderBottom:
+              idx < projects.length - 1
+                ? `1pt solid ${resumeColors.border}`
+                : "none",
+          }}
+        >
+          <ResumePDFSubsectionHeader
+            title={project}
+            date={date}
+            themeColor={themeColor}
+          />
           <View
             style={{
-              ...styles.flexRowBetween,
-              marginTop: spacing["0.5"],
+              ...styles.flexCol,
+              gap: spacing[1],
+              marginTop: spacing[1],
             }}
           >
-            <ResumePDFText bold={true}>{project}</ResumePDFText>
-            <ResumePDFText>{date}</ResumePDFText>
+            <ResumePDFSummaryBlock summary={summary} />
+            {Boolean(techStack) && (
+              <ResumePDFText
+                themeColor={themeColor}
+                style={{ lineHeight: 1.3 }}
+              >
+                <Text style={{ fontWeight: "bold" }}>技术栈：</Text>
+                {techStack}
+              </ResumePDFText>
+            )}
           </View>
-          <View style={{ ...styles.flexCol, marginTop: spacing["0.5"] }}>
-            <ResumePDFBulletList items={descriptions} />
-          </View>
+          <ResumePDFNumberedList items={descriptions} />
         </View>
-      ))}
-    </ResumePDFSection>
-  );
-};
+      )
+    )}
+  </ResumePDFSection>
+);
