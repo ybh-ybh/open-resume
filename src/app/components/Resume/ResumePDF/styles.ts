@@ -54,11 +54,12 @@ export const resumeColors = {
   white: "#FFFFFF",
 } as const;
 
-/** A4 中文技术简历的页面留白 */
+/** A4 中文技术简历的页面与章节留白 */
 export const resumeLayout = {
   pagePaddingX: "28pt",
   pagePaddingTop: "22pt",
   pagePaddingBottom: "24pt",
+  sectionSpacing: "3.6pt",
 } as const;
 
 /** PDF 与 iframe 预览共用的基础布局样式 */

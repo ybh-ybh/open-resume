@@ -4,6 +4,7 @@ import { DEBUG_RESUME_PDF_FLAG } from "lib/constants";
 import { DEFAULT_FONT_COLOR } from "lib/redux/settingsSlice";
 import {
   resumeColors,
+  resumeLayout,
   spacing,
   styles,
 } from "components/Resume/ResumePDF/styles";
@@ -24,7 +25,7 @@ export const ResumePDFSection = ({
     style={{
       ...styles.flexCol,
       gap: spacing[1.5],
-      marginTop: spacing[3],
+      marginTop: resumeLayout.sectionSpacing,
       ...style,
     }}
   >
@@ -33,7 +34,7 @@ export const ResumePDFSection = ({
         <View
           style={{
             backgroundColor: themeColor,
-            padding: `${spacing[0.5]} ${spacing[3]}`,
+            padding: `${spacing[0.25]} ${spacing[3]}`,
           }}
           debug={DEBUG_RESUME_PDF_FLAG}
         >
@@ -187,19 +188,16 @@ const splitNumberedDescription = (item: string) => {
 
 /** 渲染支持换行的黑色编号职责列表。 */
 export const ResumePDFNumberedList = ({ items }: { items: string[] }) => (
-  <View style={{ ...styles.flexCol, marginTop: spacing[0.5] }}>
+  <View style={{ ...styles.flexCol, marginTop: spacing[0.25] }}>
     {items.filter(Boolean).map((item, idx) => {
       // 当前成果的标题与详细说明。
       const { lead, body } = splitNumberedDescription(item);
 
       return (
-        <View
-          key={idx}
-          style={{ ...styles.flexRow, marginBottom: spacing[0.5] }}
-        >
+        <View key={idx} style={{ ...styles.flexRow }}>
           <ResumePDFText
             themeColor={resumeColors.ink}
-            style={{ width: spacing[4], lineHeight: 1.42 }}
+            style={{ width: spacing[4], lineHeight: 1.3 }}
           >
             {`${idx + 1}.`}
           </ResumePDFText>
@@ -208,7 +206,7 @@ export const ResumePDFNumberedList = ({ items }: { items: string[] }) => (
               color: resumeColors.body,
               flexGrow: 1,
               flexBasis: 0,
-              lineHeight: 1.42,
+              lineHeight: 1.3,
             }}
           >
             {lead && (
