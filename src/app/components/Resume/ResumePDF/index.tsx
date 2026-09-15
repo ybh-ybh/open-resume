@@ -50,6 +50,8 @@ export const ResumePDF = ({
     formToShow,
     formsOrder,
     showBulletPoints,
+    workExperienceSpacing,
+    projectSpacing,
   } = settings;
   // 未配置自定义颜色时使用图三风格的标准主蓝。
   const themeColor = settings.themeColor || DEFAULT_THEME_COLOR;
@@ -62,6 +64,8 @@ export const ResumePDF = ({
         heading={formToHeading["workExperiences"]}
         workExperiences={workExperiences}
         themeColor={themeColor}
+        bodyFontSize={fontSize}
+        workExperienceSpacing={workExperienceSpacing}
       />
     ),
     educations: () => (
@@ -77,6 +81,7 @@ export const ResumePDF = ({
         heading={formToHeading["projects"]}
         projects={projects}
         themeColor={themeColor}
+        projectSpacing={projectSpacing}
       />
     ),
     skills: () => (

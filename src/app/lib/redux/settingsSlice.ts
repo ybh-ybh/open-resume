@@ -6,6 +6,8 @@ export interface Settings {
   fontFamily: string;
   fontSize: string;
   documentSize: string;
+  workExperienceSpacing: string;
+  projectSpacing: string;
   formToShow: {
     workExperiences: boolean;
     educations: boolean;
@@ -40,12 +42,18 @@ export const DEFAULT_THEME_COLOR = "#1687C8";
 export const DEFAULT_FONT_FAMILY = "NotoSansSC";
 export const DEFAULT_FONT_SIZE = "10";
 export const DEFAULT_FONT_COLOR = "#171717"; // text-neutral-800
+/** 相邻公司条目之间的默认间距，单位为 pt */
+export const DEFAULT_WORK_EXPERIENCE_SPACING = "0.75";
+/** 相邻项目条目之间的默认间距，单位为 pt */
+export const DEFAULT_PROJECT_SPACING = "1.5";
 
 export const initialSettings: Settings = {
   themeColor: DEFAULT_THEME_COLOR,
   fontFamily: DEFAULT_FONT_FAMILY,
   fontSize: DEFAULT_FONT_SIZE,
   documentSize: "A4",
+  workExperienceSpacing: DEFAULT_WORK_EXPERIENCE_SPACING,
+  projectSpacing: DEFAULT_PROJECT_SPACING,
   formToShow: {
     workExperiences: true,
     educations: true,

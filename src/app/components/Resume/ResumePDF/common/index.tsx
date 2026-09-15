@@ -258,11 +258,13 @@ export const ResumePDFSubsectionHeader = ({
   subtitle,
   date,
   themeColor,
+  titleFontSize = "10.5pt",
 }: {
   title: string;
   subtitle?: string;
   date: string;
   themeColor: string;
+  titleFontSize?: string;
 }) => (
   <View
     style={{
@@ -275,7 +277,7 @@ export const ResumePDFSubsectionHeader = ({
     <View style={{ ...styles.flexRow, alignItems: "baseline", flexGrow: 1 }}>
       <ResumePDFText
         bold={true}
-        style={{ color: resumeColors.ink, fontSize: "10.5pt" }}
+        style={{ color: resumeColors.ink, fontSize: titleFontSize }}
       >
         {title}
       </ResumePDFText>

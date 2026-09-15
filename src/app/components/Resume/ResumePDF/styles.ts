@@ -57,10 +57,22 @@ export const resumeColors = {
 /** A4 中文技术简历的页面与章节留白 */
 export const resumeLayout = {
   pagePaddingX: "28pt",
-  pagePaddingTop: "22pt",
+  pagePaddingTop: "15.4pt",
   pagePaddingBottom: "24pt",
   sectionSpacing: "3.6pt",
 } as const;
+
+/** 将设置中的间距转换为 React PDF 可识别的安全 pt 值 */
+export const getSafeSpacingInPt = (value: string, fallback: string) => {
+  // 用户正在清空输入框或输入非数字时使用默认值。
+  const parsedValue = value.trim() === "" ? Number.NaN : Number(value);
+  // 默认值也转换为数值，保证最终总能得到有效间距。
+  const parsedFallback = Number(fallback);
+  // 将间距限制在设置面板允许的 0 至 24pt 范围内。
+  const safeValue = Number.isFinite(parsedValue) ? parsedValue : parsedFallback;
+
+  return `${Math.min(24, Math.max(0, safeValue))}pt`;
+};
 
 /** PDF 与 iframe 预览共用的基础布局样式 */
 export const styles = StyleSheet.create({

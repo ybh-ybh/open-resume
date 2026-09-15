@@ -19,7 +19,13 @@ import { Cog6ToothIcon } from "@heroicons/react/24/outline";
 
 export const ThemeForm = () => {
   const settings = useAppSelector(selectSettings);
-  const { fontSize, fontFamily, documentSize } = settings;
+  const {
+    fontSize,
+    fontFamily,
+    documentSize,
+    workExperienceSpacing,
+    projectSpacing,
+  } = settings;
   const themeColor = settings.themeColor || DEFAULT_THEME_COLOR;
   const dispatch = useAppDispatch();
 
@@ -85,6 +91,38 @@ export const ThemeForm = () => {
             selectedFontSize={fontSize}
             handleSettingsChange={handleSettingsChange}
           />
+        </div>
+        <div>
+          <InputGroupWrapper label="条目间距（pt）" />
+          <p className="mt-1 text-xs text-gray-500">
+            控制同一板块内相邻公司或项目之间的留白。
+          </p>
+          <div className="mt-3 grid gap-3 sm:grid-cols-2">
+            <InlineInput
+              label="公司之间"
+              labelClassName="justify-between"
+              name="workExperienceSpacing"
+              value={workExperienceSpacing}
+              placeholder="0.75"
+              type="number"
+              min={0}
+              max={24}
+              step={0.25}
+              onChange={handleSettingsChange}
+            />
+            <InlineInput
+              label="项目之间"
+              labelClassName="justify-between"
+              name="projectSpacing"
+              value={projectSpacing}
+              placeholder="1.5"
+              type="number"
+              min={0}
+              max={24}
+              step={0.25}
+              onChange={handleSettingsChange}
+            />
+          </div>
         </div>
         <div>
           <InputGroupWrapper label="纸张大小" />
