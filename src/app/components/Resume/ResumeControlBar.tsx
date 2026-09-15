@@ -1,6 +1,11 @@
 "use client";
-import { useEffect } from "react";
-import { useSetDefaultScale } from "components/Resume/hooks";
+import { RefObject, useEffect } from "react";
+import {
+  MAX_RESUME_SCALE,
+  MIN_RESUME_SCALE,
+  RESUME_SCALE_STEP,
+  useSetDefaultScale,
+} from "components/Resume/hooks";
 import {
   MagnifyingGlassIcon,
   ArrowDownTrayIcon,
@@ -12,18 +17,21 @@ const ResumeControlBar = ({
   scale,
   setScale,
   documentSize,
+  resumeContainerRef,
   document,
   fileName,
 }: {
   scale: number;
   setScale: (scale: number) => void;
   documentSize: string;
+  resumeContainerRef: RefObject<HTMLElement>;
   document: JSX.Element;
   fileName: string;
 }) => {
   const { scaleOnResize, setScaleOnResize } = useSetDefaultScale({
     setScale,
     documentSize,
+    resumeContainerRef,
   });
 
   const [instance, update] = usePDF({ document });
@@ -39,9 +47,9 @@ const ResumeControlBar = ({
         <MagnifyingGlassIcon className="h-5 w-5" aria-hidden="true" />
         <input
           type="range"
-          min={0.5}
-          max={1.5}
-          step={0.01}
+          min={MIN_RESUME_SCALE}
+          max={MAX_RESUME_SCALE}
+          step={RESUME_SCALE_STEP}
           value={scale}
           onChange={(e) => {
             setScaleOnResize(false);

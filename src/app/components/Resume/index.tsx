@@ -1,5 +1,5 @@
 "use client";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useRef } from "react";
 import { ResumeIframeCSR } from "components/Resume/ResumeIFrame";
 import { ResumePDF } from "components/Resume/ResumePDF";
 import {
@@ -19,6 +19,8 @@ import { NonEnglishFontsCSSLazyLoader } from "components/fonts/NonEnglishFontsCS
 
 export const Resume = () => {
   const [scale, setScale] = useState(0.8);
+  // 引用实际可滚动的预览区，供自动缩放计算可用宽度。
+  const resumeContainerRef = useRef<HTMLElement>(null);
   const resume = useAppSelector(selectResume);
   const settings = useAppSelector(selectSettings);
   const document = useMemo(
@@ -34,8 +36,11 @@ export const Resume = () => {
       <NonEnglishFontsCSSLazyLoader />
       <div className="relative flex justify-center md:justify-start">
         <FlexboxSpacer maxWidth={50} className="hidden md:block" />
-        <div className="relative">
-          <section className="h-[calc(100vh-var(--top-nav-bar-height)-var(--resume-control-bar-height))] overflow-auto md:p-[var(--resume-padding)]">
+        <div className="relative min-w-0 flex-1">
+          <section
+            ref={resumeContainerRef}
+            className="h-[calc(100vh-var(--top-nav-bar-height)-var(--resume-control-bar-height))] overflow-auto md:p-[var(--resume-padding)]"
+          >
             <ResumeIframeCSR
               documentSize={settings.documentSize}
               scale={scale}
@@ -52,6 +57,7 @@ export const Resume = () => {
             scale={scale}
             setScale={setScale}
             documentSize={settings.documentSize}
+            resumeContainerRef={resumeContainerRef}
             document={document}
             fileName={resume.profile.name + " - 简历"}
           />
