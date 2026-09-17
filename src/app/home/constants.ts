@@ -10,6 +10,7 @@ import { deepClone } from "lib/deep-clone";
 export const END_HOME_RESUME: Resume = {
   profile: {
     name: "John Doe",
+    photo: "",
     age: "23 岁",
     workYears: "4年",
     education: "本科",

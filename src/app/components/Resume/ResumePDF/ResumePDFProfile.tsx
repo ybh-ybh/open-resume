@@ -1,4 +1,4 @@
-import { View } from "@react-pdf/renderer";
+import { Image as PDFImage, View } from "@react-pdf/renderer";
 import {
   ResumePDFIcon,
   type IconType,
@@ -17,6 +17,37 @@ type ProfileEntry = {
   value: string;
   iconType?: IconType;
   linkType?: "email" | "phone" | "url";
+};
+
+/** 渲染预览与 PDF 共用的右上角证件照。 */
+const ResumePDFProfilePhoto = ({
+  photo,
+  isPDF,
+}: {
+  photo: string;
+  isPDF: boolean;
+}) => {
+  if (!photo) return null;
+
+  // PDF 证件照的固定尺寸与边框样式。
+  const photoStyle = {
+    width: "42pt",
+    height: "56pt",
+    objectFit: "cover" as const,
+    borderRadius: "2pt",
+    border: `1pt solid ${resumeColors.border}`,
+    marginRight: spacing[3],
+  };
+
+  if (isPDF) {
+    return <PDFImage src={photo} style={photoStyle} />;
+  }
+
+  return (
+    // 预览需与 React PDF 共用 data URL 和 pt 尺寸，使用原生图片最稳定。
+    // eslint-disable-next-line @next/next/no-img-element
+    <img src={photo} alt="个人照片" style={photoStyle} />
+  );
 };
 
 /** 渲染一行基础信息，并保持每行内部的分隔线一致。 */
@@ -112,6 +143,7 @@ export const ResumePDFProfile = ({
     workYears,
     education,
     availability,
+    photo,
   } = profile;
   // 第一行只放年龄、电话和邮箱。
   const firstRowEntries = (
@@ -139,39 +171,56 @@ export const ResumePDFProfile = ({
 
   return (
     <ResumePDFSection style={{ marginTop: spacing[0] }}>
-      <ResumePDFText
-        bold={true}
+      <View
         style={{
-          color: resumeColors.ink,
-          fontSize: "22pt",
-          letterSpacing: "1.2pt",
-          lineHeight: 1.15,
+          ...styles.flexRowBetween,
+          alignItems: "flex-start",
         }}
       >
-        {name}
-      </ResumePDFText>
-      <ResumePDFProfileRow
-        entries={firstRowEntries}
-        themeColor={themeColor}
-        isPDF={isPDF}
-      />
-      <ResumePDFProfileRow
-        entries={secondRowEntries}
-        themeColor={themeColor}
-        isPDF={isPDF}
-      />
-      {Boolean(summary) && (
-        <ResumePDFText
+        <View
           style={{
-            color: resumeColors.muted,
-            fontSize: "9pt",
-            lineHeight: 1.4,
-            marginTop: spacing[0.5],
+            ...styles.flexCol,
+            flexGrow: 1,
+            flexBasis: 0,
+            paddingRight: photo ? spacing[4] : 0,
           }}
         >
-          {summary}
-        </ResumePDFText>
-      )}
+          <ResumePDFText
+            bold={true}
+            style={{
+              color: resumeColors.ink,
+              fontSize: "22pt",
+              letterSpacing: "1.2pt",
+              lineHeight: 1.15,
+            }}
+          >
+            {name}
+          </ResumePDFText>
+          <ResumePDFProfileRow
+            entries={firstRowEntries}
+            themeColor={themeColor}
+            isPDF={isPDF}
+          />
+          <ResumePDFProfileRow
+            entries={secondRowEntries}
+            themeColor={themeColor}
+            isPDF={isPDF}
+          />
+          {Boolean(summary) && (
+            <ResumePDFText
+              style={{
+                color: resumeColors.muted,
+                fontSize: "9pt",
+                lineHeight: 1.4,
+                marginTop: spacing[0.5],
+              }}
+            >
+              {summary}
+            </ResumePDFText>
+          )}
+        </View>
+        <ResumePDFProfilePhoto photo={photo} isPDF={isPDF} />
+      </View>
     </ResumePDFSection>
   );
 };

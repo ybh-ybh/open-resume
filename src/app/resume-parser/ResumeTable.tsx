@@ -61,6 +61,10 @@ export const ResumeTable = ({ resume }: { resume: Resume }) => {
       <tbody className="divide-y text-left align-top">
         <TableRowHeader>Profile</TableRowHeader>
         <TableRow label="Name" value={resume.profile.name} />
+        <TableRow
+          label="Photo"
+          value={resume.profile.photo ? "Uploaded" : ""}
+        />
         <TableRow label="Age" value={resume.profile.age} />
         <TableRow label="Work Years" value={resume.profile.workYears} />
         <TableRow label="Education" value={resume.profile.education} />

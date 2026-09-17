@@ -1,5 +1,7 @@
 export interface ResumeProfile {
   name: string;
+  /** 经压缩后的个人照片 data URL */
+  photo: string;
   /** 年龄信息，按用户输入原样展示 */
   age: string;
   /** 工作年限，例如“4年”或“4年经验” */

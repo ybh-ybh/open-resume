@@ -154,6 +154,7 @@ export const extractProfile = (sections: ResumeSectionToLines) => {
   return {
     profile: {
       name,
+      photo: "",
       age: "",
       workYears: "",
       education: "",

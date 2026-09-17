@@ -13,6 +13,7 @@ import type { ShowForm } from "lib/redux/settingsSlice";
 
 export const initialProfile: ResumeProfile = {
   name: "",
+  photo: "",
   age: "",
   workYears: "",
   education: "",

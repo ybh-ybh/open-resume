@@ -1,5 +1,6 @@
 import { BaseForm } from "components/ResumeForm/Form";
 import { Input, Select, Textarea } from "components/ResumeForm/Form/InputGroup";
+import { ProfilePhotoInput } from "components/ResumeForm/Form/ProfilePhotoInput";
 import { useAppDispatch, useAppSelector } from "lib/redux/hooks";
 import { changeProfile, selectProfile } from "lib/redux/resumeSlice";
 import { ResumeProfile } from "lib/redux/types";
@@ -24,6 +25,7 @@ export const ProfileForm = () => {
     workYears,
     education,
     availability,
+    photo,
   } = profile;
 
   const handleProfileChange = (field: keyof ResumeProfile, value: string) => {
@@ -33,6 +35,10 @@ export const ProfileForm = () => {
   return (
     <BaseForm>
       <div className="grid grid-cols-6 gap-3">
+        <ProfilePhotoInput
+          value={photo}
+          onChange={(value) => handleProfileChange("photo", value)}
+        />
         <Input
           label="姓名"
           labelClassName="col-span-4"
