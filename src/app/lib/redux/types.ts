@@ -6,6 +6,8 @@ export interface ResumeProfile {
   workYears: string;
   /** 最高学历，例如“本科” */
   education: string;
+  /** 到岗状态，例如“随时到岗”或“月内到岗” */
+  availability: string;
   email: string;
   phone: string;
   /** GitHub 或其他主要代码主页地址 */

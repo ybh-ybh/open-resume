@@ -13,6 +13,7 @@ export const END_HOME_RESUME: Resume = {
     age: "23 岁",
     workYears: "4年",
     education: "本科",
+    availability: "随时到岗",
     summary:
       "Software engineer obsessed with building exceptional products that people love",
     email: "hello@openresume.com",

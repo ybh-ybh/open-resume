@@ -111,6 +111,7 @@ export const ResumePDFProfile = ({
     summary,
     workYears,
     education,
+    availability,
   } = profile;
   // 第一行只放年龄、电话和邮箱。
   const firstRowEntries = (
@@ -120,11 +121,12 @@ export const ResumePDFProfile = ({
       { key: "email", value: email, iconType: "email", linkType: "email" },
     ] as ProfileEntry[]
   ).filter(({ value }) => Boolean(value));
-  // 第二行依次放工作年限、学历、GitHub 和个人博客。
+  // 第二行依次放工作年限、学历、到岗状态、GitHub 和个人博客。
   const secondRowEntries = (
     [
       { key: "workYears", value: formatWorkYears(workYears) },
       { key: "education", value: education },
+      { key: "availability", value: availability },
       {
         key: "github",
         value: url,

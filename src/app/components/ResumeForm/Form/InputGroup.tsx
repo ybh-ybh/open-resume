@@ -13,6 +13,19 @@ interface InputProps<K extends string, V extends string | string[]> {
   onChange: (name: K, value: V) => void;
 }
 
+/** 下拉选项的显示文本和值。 */
+interface SelectOption {
+  label: string;
+  value: string;
+}
+
+/** 单选下拉框的字段属性。 */
+interface SelectProps<K extends string>
+  extends Omit<InputProps<K, string>, "placeholder"> {
+  options: readonly SelectOption[];
+  placeholder: string;
+}
+
 /**
  * InputGroupWrapper wraps a label element around a input children. This is preferable
  * than having input as a sibling since it makes clicking label auto focus input children
@@ -56,6 +69,33 @@ export const Input = <K extends string>({
     </InputGroupWrapper>
   );
 };
+
+/** 渲染与普通输入框视觉一致的单选下拉框。 */
+export const Select = <K extends string>({
+  name,
+  value = "",
+  placeholder,
+  options,
+  onChange,
+  label,
+  labelClassName,
+}: SelectProps<K>) => (
+  <InputGroupWrapper label={label} className={labelClassName}>
+    <select
+      name={name}
+      value={value}
+      onChange={(event) => onChange(name, event.target.value)}
+      className={`${INPUT_CLASS_NAME} bg-white`}
+    >
+      <option value="">{placeholder}</option>
+      {options.map((option) => (
+        <option key={option.value} value={option.value}>
+          {option.label}
+        </option>
+      ))}
+    </select>
+  </InputGroupWrapper>
+);
 
 export const Textarea = <T extends string>({
   label,

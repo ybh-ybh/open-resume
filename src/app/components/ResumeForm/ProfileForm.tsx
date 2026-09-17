@@ -1,8 +1,14 @@
 import { BaseForm } from "components/ResumeForm/Form";
-import { Input, Textarea } from "components/ResumeForm/Form/InputGroup";
+import { Input, Select, Textarea } from "components/ResumeForm/Form/InputGroup";
 import { useAppDispatch, useAppSelector } from "lib/redux/hooks";
 import { changeProfile, selectProfile } from "lib/redux/resumeSlice";
 import { ResumeProfile } from "lib/redux/types";
+
+/** 到岗状态的可选值。 */
+const AVAILABILITY_OPTIONS = [
+  { label: "随时到岗", value: "随时到岗" },
+  { label: "月内到岗", value: "月内到岗" },
+] as const;
 
 export const ProfileForm = () => {
   const profile = useAppSelector(selectProfile);
@@ -17,6 +23,7 @@ export const ProfileForm = () => {
     summary,
     workYears,
     education,
+    availability,
   } = profile;
 
   const handleProfileChange = (field: keyof ResumeProfile, value: string) => {
@@ -68,15 +75,23 @@ export const ProfileForm = () => {
         />
         <Input
           label="GitHub链接"
-          labelClassName="col-span-2"
+          labelClassName="col-span-3"
           name="url"
           placeholder="github.com/username"
           value={url}
           onChange={handleProfileChange}
         />
         <Input
+          label="个人博客"
+          labelClassName="col-span-3"
+          name="blogUrl"
+          placeholder="blog.example.com"
+          value={blogUrl}
+          onChange={handleProfileChange}
+        />
+        <Input
           label="工作年限"
-          labelClassName="col-span-1"
+          labelClassName="col-span-2"
           name="workYears"
           placeholder="4年"
           value={workYears}
@@ -84,18 +99,19 @@ export const ProfileForm = () => {
         />
         <Input
           label="学历"
-          labelClassName="col-span-1"
+          labelClassName="col-span-2"
           name="education"
           placeholder="本科"
           value={education}
           onChange={handleProfileChange}
         />
-        <Input
-          label="个人博客"
+        <Select
+          label="状态"
           labelClassName="col-span-2"
-          name="blogUrl"
-          placeholder="blog.example.com"
-          value={blogUrl}
+          name="availability"
+          placeholder="请选择到岗状态"
+          value={availability}
+          options={AVAILABILITY_OPTIONS}
           onChange={handleProfileChange}
         />
       </div>

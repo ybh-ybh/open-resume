@@ -16,6 +16,7 @@ export const initialProfile: ResumeProfile = {
   age: "",
   workYears: "",
   education: "",
+  availability: "随时到岗",
   summary: "",
   email: "",
   phone: "",
