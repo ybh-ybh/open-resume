@@ -143,21 +143,33 @@ const ResumePDFPage = ({
 
 // 多页预览需要的输入参数。
 type ResumePDFPreviewProps = {
-  pdfUrl: string | null;
+  pdfBlob: Blob | null;
   scale: number;
   documentSize: string;
+};
+
+/**
+ * 延迟释放旧文档，确保旧页面画布的取消副作用已经执行完毕。
+ */
+const scheduleDocumentDestroy = (documentToDestroy: PDFDocumentProxy) => {
+  window.setTimeout(() => {
+    // 清理阶段的终止异常不应影响当前已经加载完成的新预览。
+    void documentToDestroy.destroy().catch(() => undefined);
+  }, 0);
 };
 
 /**
  * 加载已生成的简历 PDF，并把全部页面按顺序展示在同一滚动区域中。
  */
 const ResumePDFPreview = ({
-  pdfUrl,
+  pdfBlob,
   scale,
   documentSize,
 }: ResumePDFPreviewProps) => {
   // 保存当前已经加载完成的 PDF 文档。
   const [pdfDocument, setPdfDocument] = useState<PDFDocumentProxy | null>(null);
+  // 始终指向页面当前正在使用的文档，供替换和卸载时安全释放。
+  const activePdfDocumentRef = useRef<PDFDocumentProxy | null>(null);
   // 保存 PDF 加载失败时的提示信息。
   const [loadError, setLoadError] = useState("");
   // 根据纸张类型计算加载占位页的宽度。
@@ -167,35 +179,73 @@ const ResumePDFPreview = ({
     documentSize === "A4" ? A4_HEIGHT_PX : LETTER_HEIGHT_PX;
 
   useEffect(() => {
-    if (!pdfUrl) {
+    if (!pdfBlob) {
       return;
     }
 
-    // 标记本次 URL 加载是否已被后续更新取代。
+    // 标记本次二进制数据加载是否已被后续更新取代。
     let isCancelled = false;
-    // 创建当前 PDF URL 对应的加载任务。
-    const loadingTask = pdfjs.getDocument(pdfUrl);
 
     setLoadError("");
 
-    loadingTask.promise
-      .then((nextDocument) => {
-        if (!isCancelled) {
-          setPdfDocument(nextDocument);
-        }
-      })
-      .catch((error: unknown) => {
-        if (!isCancelled) {
-          console.error("无法加载简历预览", error);
-          setLoadError("简历预览加载失败，请稍后重试");
-        }
+    /**
+     * 将 Blob 转换为 PDF.js 可独立持有的二进制数据并加载文档。
+     */
+    const loadDocument = async () => {
+      // Blob 不会像临时下载 URL 一样在连续编辑时被提前撤销。
+      const pdfBuffer = await pdfBlob.arrayBuffer();
+      if (isCancelled) {
+        return;
+      }
+
+      // 为 PDF.js 创建独立数据副本，避免后续 Blob 更新影响当前任务。
+      const loadingTask = pdfjs.getDocument({
+        data: new Uint8Array(pdfBuffer),
       });
+      // 等待 PDF.js 完成文档解析。
+      const nextDocument = await loadingTask.promise;
+
+      if (isCancelled) {
+        // 已过期的加载结果从未交给画布使用，可以直接释放。
+        void nextDocument.destroy().catch(() => undefined);
+        return;
+      }
+
+      setPdfDocument(nextDocument);
+    };
+
+    loadDocument().catch((error: unknown) => {
+      if (!isCancelled) {
+        console.error("无法加载简历预览", error);
+        setLoadError("简历预览加载失败，请稍后重试");
+      }
+    });
 
     return () => {
       isCancelled = true;
-      void loadingTask.destroy();
     };
-  }, [pdfUrl]);
+  }, [pdfBlob]);
+
+  useEffect(() => {
+    // 读取替换前仍由画布使用的旧文档。
+    const previousDocument = activePdfDocumentRef.current;
+    activePdfDocumentRef.current = pdfDocument;
+
+    if (previousDocument && previousDocument !== pdfDocument) {
+      scheduleDocumentDestroy(previousDocument);
+    }
+  }, [pdfDocument]);
+
+  useEffect(
+    () => () => {
+      // 整个预览卸载时释放最后一份仍在使用的 PDF 文档。
+      const currentDocument = activePdfDocumentRef.current;
+      if (currentDocument) {
+        scheduleDocumentDestroy(currentDocument);
+      }
+    },
+    []
+  );
 
   // 根据 PDF 实际页数生成稳定的页码列表。
   const pageNumbers = useMemo(

@@ -18,8 +18,8 @@ import { NonEnglishFontsCSSLazyLoader } from "components/fonts/NonEnglishFontsCS
 
 export const Resume = () => {
   const [scale, setScale] = useState(0.8);
-  // 保存下载组件生成的 PDF 地址，供右侧多页预览复用。
-  const [pdfUrl, setPdfUrl] = useState<string | null>(null);
+  // 保存下载组件生成的 PDF 二进制数据，供右侧多页预览稳定读取。
+  const [pdfBlob, setPdfBlob] = useState<Blob | null>(null);
   // 引用实际可滚动的预览区，供自动缩放计算可用宽度。
   const resumeContainerRef = useRef<HTMLElement>(null);
   const resume = useAppSelector(selectResume);
@@ -43,7 +43,7 @@ export const Resume = () => {
             className="h-[calc(100vh-var(--top-nav-bar-height)-var(--resume-control-bar-height))] overflow-auto md:p-[var(--resume-padding)]"
           >
             <ResumePDFPreviewCSR
-              pdfUrl={pdfUrl}
+              pdfBlob={pdfBlob}
               documentSize={settings.documentSize}
               scale={scale}
             />
@@ -55,7 +55,7 @@ export const Resume = () => {
             resumeContainerRef={resumeContainerRef}
             document={document}
             fileName={resume.profile.name + " - 简历"}
-            onPdfUrlChange={setPdfUrl}
+            onPdfBlobChange={setPdfBlob}
           />
         </div>
         <ResumeControlBarBorder />

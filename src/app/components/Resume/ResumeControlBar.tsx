@@ -20,7 +20,7 @@ const ResumeControlBar = ({
   resumeContainerRef,
   document,
   fileName,
-  onPdfUrlChange,
+  onPdfBlobChange,
 }: {
   scale: number;
   setScale: (scale: number) => void;
@@ -28,7 +28,7 @@ const ResumeControlBar = ({
   resumeContainerRef: RefObject<HTMLElement>;
   document: JSX.Element;
   fileName: string;
-  onPdfUrlChange: (pdfUrl: string) => void;
+  onPdfBlobChange: (pdfBlob: Blob) => void;
 }) => {
   const { scaleOnResize, setScaleOnResize } = useSetDefaultScale({
     setScale,
@@ -44,11 +44,11 @@ const ResumeControlBar = ({
   }, [update, document]);
 
   useEffect(() => {
-    // 将下载功能已经生成的 PDF 地址同步给右侧多页预览。
-    if (instance.url) {
-      onPdfUrlChange(instance.url);
+    // 将稳定的 PDF 二进制数据同步给预览，避免下载 URL 被撤销时读取失败。
+    if (instance.blob) {
+      onPdfBlobChange(instance.blob);
     }
-  }, [instance.url, onPdfUrlChange]);
+  }, [instance.blob, onPdfBlobChange]);
 
   return (
     <div className="sticky bottom-0 left-0 right-0 flex h-[var(--resume-control-bar-height)] items-center justify-center px-[var(--resume-padding)] text-gray-600 lg:justify-between">
