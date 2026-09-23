@@ -20,6 +20,7 @@ const ResumeControlBar = ({
   resumeContainerRef,
   document,
   fileName,
+  onPdfUrlChange,
 }: {
   scale: number;
   setScale: (scale: number) => void;
@@ -27,6 +28,7 @@ const ResumeControlBar = ({
   resumeContainerRef: RefObject<HTMLElement>;
   document: JSX.Element;
   fileName: string;
+  onPdfUrlChange: (pdfUrl: string) => void;
 }) => {
   const { scaleOnResize, setScaleOnResize } = useSetDefaultScale({
     setScale,
@@ -40,6 +42,13 @@ const ResumeControlBar = ({
   useEffect(() => {
     update();
   }, [update, document]);
+
+  useEffect(() => {
+    // 将下载功能已经生成的 PDF 地址同步给右侧多页预览。
+    if (instance.url) {
+      onPdfUrlChange(instance.url);
+    }
+  }, [instance.url, onPdfUrlChange]);
 
   return (
     <div className="sticky bottom-0 left-0 right-0 flex h-[var(--resume-control-bar-height)] items-center justify-center px-[var(--resume-padding)] text-gray-600 lg:justify-between">
@@ -68,9 +77,14 @@ const ResumeControlBar = ({
         </label>
       </div>
       <a
-        className="ml-1 flex items-center gap-1 rounded-md border border-gray-300 px-3 py-0.5 hover:bg-gray-100 lg:ml-8"
-        href={instance.url!}
+        className={`ml-1 flex items-center gap-1 rounded-md border border-gray-300 px-3 py-0.5 lg:ml-8 ${
+          instance.url
+            ? "hover:bg-gray-100"
+            : "pointer-events-none opacity-50"
+        }`}
+        href={instance.url ?? undefined}
         download={fileName}
+        aria-disabled={!instance.url}
       >
         <ArrowDownTrayIcon className="h-4 w-4" />
         <span className="whitespace-nowrap">下载简历</span>

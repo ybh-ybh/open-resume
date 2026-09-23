@@ -30,7 +30,11 @@ export const ResumePDFSection = ({
     }}
   >
     {Boolean(heading) && (
-      <View style={{ ...styles.flexRow, alignItems: "center" }}>
+      <View
+        wrap={false}
+        minPresenceAhead={24}
+        style={{ ...styles.flexRow, alignItems: "center" }}
+      >
         <View
           style={{
             backgroundColor: themeColor,
@@ -139,7 +143,7 @@ export const ResumePDFBulletList = ({
         showBulletPoints && parsedItem.hasMarkdownBullet;
 
       return (
-        <View style={{ ...styles.flexRow }} key={idx}>
+        <View wrap={false} style={{ ...styles.flexRow }} key={idx}>
           {shouldRenderBullet && (
             <ResumePDFText
               themeColor={resumeColors.ink}
@@ -194,7 +198,7 @@ export const ResumePDFNumberedList = ({ items }: { items: string[] }) => (
       const { lead, body } = splitNumberedDescription(item);
 
       return (
-        <View key={idx} style={{ ...styles.flexRow }}>
+        <View wrap={false} key={idx} style={{ ...styles.flexRow }}>
           <ResumePDFText
             themeColor={resumeColors.ink}
             style={{ width: spacing[4], lineHeight: 1.3 }}
@@ -267,6 +271,8 @@ export const ResumePDFSubsectionHeader = ({
   titleFontSize?: string;
 }) => (
   <View
+    wrap={false}
+    minPresenceAhead={18}
     style={{
       ...styles.flexRowBetween,
       alignItems: "center",
@@ -303,6 +309,7 @@ export const ResumePDFSummaryBlock = ({ summary }: { summary: string }) => {
 
   return (
     <View
+      wrap={false}
       style={{
         backgroundColor: resumeColors.surface,
         borderLeft: `2pt solid ${resumeColors.border}`,

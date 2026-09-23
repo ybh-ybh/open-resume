@@ -1,6 +1,6 @@
 "use client";
 import { useState, useMemo, useRef } from "react";
-import { ResumeIframeCSR } from "components/Resume/ResumeIFrame";
+import { ResumePDFPreviewCSR } from "components/Resume/ResumePDFPreview";
 import { ResumePDF } from "components/Resume/ResumePDF";
 import {
   ResumeControlBarCSR,
@@ -10,7 +10,6 @@ import { FlexboxSpacer } from "components/FlexboxSpacer";
 import { useAppSelector } from "lib/redux/hooks";
 import { selectResume } from "lib/redux/resumeSlice";
 import { selectSettings } from "lib/redux/settingsSlice";
-import { DEBUG_RESUME_PDF_FLAG } from "lib/constants";
 import {
   useRegisterReactPDFFont,
   useRegisterReactPDFHyphenationCallback,
@@ -19,6 +18,8 @@ import { NonEnglishFontsCSSLazyLoader } from "components/fonts/NonEnglishFontsCS
 
 export const Resume = () => {
   const [scale, setScale] = useState(0.8);
+  // 保存下载组件生成的 PDF 地址，供右侧多页预览复用。
+  const [pdfUrl, setPdfUrl] = useState<string | null>(null);
   // 引用实际可滚动的预览区，供自动缩放计算可用宽度。
   const resumeContainerRef = useRef<HTMLElement>(null);
   const resume = useAppSelector(selectResume);
@@ -41,17 +42,11 @@ export const Resume = () => {
             ref={resumeContainerRef}
             className="h-[calc(100vh-var(--top-nav-bar-height)-var(--resume-control-bar-height))] overflow-auto md:p-[var(--resume-padding)]"
           >
-            <ResumeIframeCSR
+            <ResumePDFPreviewCSR
+              pdfUrl={pdfUrl}
               documentSize={settings.documentSize}
               scale={scale}
-              enablePDFViewer={DEBUG_RESUME_PDF_FLAG}
-            >
-              <ResumePDF
-                resume={resume}
-                settings={settings}
-                isPDF={DEBUG_RESUME_PDF_FLAG}
-              />
-            </ResumeIframeCSR>
+            />
           </section>
           <ResumeControlBarCSR
             scale={scale}
@@ -60,6 +55,7 @@ export const Resume = () => {
             resumeContainerRef={resumeContainerRef}
             document={document}
             fileName={resume.profile.name + " - 简历"}
+            onPdfUrlChange={setPdfUrl}
           />
         </div>
         <ResumeControlBarBorder />

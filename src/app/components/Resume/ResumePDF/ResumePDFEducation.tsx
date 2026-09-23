@@ -28,6 +28,7 @@ export const ResumePDFEducation = ({
     {educations.map(({ school, degree, date, gpa, descriptions }, idx) => (
       <View
         key={idx}
+        wrap={false}
         style={{
           paddingBottom: idx < educations.length - 1 ? spacing[2] : 0,
           borderBottom:
