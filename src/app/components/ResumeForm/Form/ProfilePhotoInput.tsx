@@ -1,5 +1,5 @@
 import { PhotoIcon, TrashIcon } from "@heroicons/react/24/outline";
-import { useRef, useState, type ChangeEvent } from "react";
+import { useEffect, useRef, useState, type ChangeEvent } from "react";
 
 /** 压缩后证件照的像素宽度。 */
 const PHOTO_WIDTH = 480;
@@ -101,6 +101,14 @@ export const ProfilePhotoInput = ({
   value: string;
   onChange: (value: string) => void;
 }) => {
+  // 卸载后废弃照片异步结果，防止切换简历后写入新记录。
+  const mountedRef = useRef(false);
+  useEffect(() => {
+    mountedRef.current = true;
+    return () => {
+      mountedRef.current = false;
+    };
+  }, []);
   // 隐藏文件输入框的引用。
   const inputRef = useRef<HTMLInputElement>(null);
   // 当前照片处理错误。
@@ -129,13 +137,15 @@ export const ProfilePhotoInput = ({
     try {
       // 压缩后的证件照数据。
       const compressedPhoto = await compressProfilePhoto(file);
+      if (!mountedRef.current) return;
       onChange(compressedPhoto);
     } catch (photoError) {
+      if (!mountedRef.current) return;
       setError(
         photoError instanceof Error ? photoError.message : "照片处理失败"
       );
     } finally {
-      setIsProcessing(false);
+      if (mountedRef.current) setIsProcessing(false);
     }
   };
 

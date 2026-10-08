@@ -2,10 +2,9 @@ import { useState } from "react";
 import { LockClosedIcon } from "@heroicons/react/24/solid";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import { parseResumeFromPdf } from "lib/parse-resume-from-pdf";
-import {
-  getHasUsedAppBefore,
-  saveStateToLocalStorage,
-} from "lib/redux/local-storage";
+import { getHasUsedAppBefore } from "lib/redux/local-storage";
+import { importResume } from "lib/redux/collection-actions";
+import { store } from "lib/redux/store";
 import { type ShowForm, initialSettings } from "lib/redux/settingsSlice";
 import { useRouter } from "next/navigation";
 import addPdfSrc from "public/assets/add-pdf.svg";
@@ -31,6 +30,10 @@ export const ResumeDropzone = ({
   const [file, setFile] = useState(defaultFileState);
   const [isHoveredOnDropzone, setIsHoveredOnDropzone] = useState(false);
   const [hasNonPdfFile, setHasNonPdfFile] = useState(false);
+  // 导入过程中禁用重复点击，并将解析或存储错误留在当前页面。
+  const [isImporting, setIsImporting] = useState(false);
+  // 错误不会触发跳转，已有数据始终保留。
+  const [importError, setImportError] = useState("");
   const router = useRouter();
 
   const hasFile = Boolean(file.name);
@@ -71,27 +74,46 @@ export const ResumeDropzone = ({
     onFileUrlChange("");
   };
 
+  /** 解析并追加当前 PDF，保存成功后才进入制作页。 */
   const onImportClick = async () => {
-    const resume = await parseResumeFromPdf(file.fileUrl);
-    const settings = deepClone(initialSettings);
+    if (isImporting) return;
+    setIsImporting(true);
+    setImportError("");
+    try {
+      // PDF 解析结果将作为新的独立简历记录。
+      const resume = await parseResumeFromPdf(file.fileUrl);
+      // 导入记录使用默认排版，并保留原有板块显示推断。
+      const settings = deepClone(initialSettings);
 
-    // Set formToShow settings based on uploaded resume if users have used the app before
-    if (getHasUsedAppBefore()) {
-      const sections = Object.keys(settings.formToShow) as ShowForm[];
-      const sectionToFormToShow: Record<ShowForm, boolean> = {
-        workExperiences: resume.workExperiences.length > 0,
-        educations: resume.educations.length > 0,
-        projects: resume.projects.length > 0,
-        skills: resume.skills.descriptions.length > 0,
-        custom: resume.custom.descriptions.length > 0,
-      };
-      for (const section of sections) {
-        settings.formToShow[section] = sectionToFormToShow[section];
+      // Set formToShow settings based on uploaded resume if users have used the app before
+      if (getHasUsedAppBefore()) {
+        // 根据解析出的内容决定显示哪些板块。
+        const sections = Object.keys(settings.formToShow) as ShowForm[];
+        // 对应原有导入流程的板块存在性判断。
+        const sectionToFormToShow: Record<ShowForm, boolean> = {
+          workExperiences: resume.workExperiences.length > 0,
+          educations: resume.educations.length > 0,
+          projects: resume.projects.length > 0,
+          skills: resume.skills.descriptions.length > 0,
+          custom: resume.custom.descriptions.length > 0,
+        };
+        for (const section of sections) {
+          settings.formToShow[section] = sectionToFormToShow[section];
+        }
       }
-    }
 
-    saveStateToLocalStorage({ resume, settings });
-    router.push("/resume-builder");
+      // 导入名称使用文件名，不改变解析得到的个人姓名。
+      const name = file.name.replace(/\.pdf$/i, "").trim() || "导入简历";
+      if (store.dispatch(importResume(name, resume, settings))) {
+        router.push("/resume-builder");
+      } else {
+        setImportError(store.getState().storage.error);
+      }
+    } catch {
+      setImportError("PDF 导入失败，请检查文件后重试。已有简历已保留。");
+    } finally {
+      setIsImporting(false);
+    }
   };
 
   return (
@@ -149,6 +171,7 @@ export const ResumeDropzone = ({
               className="outline-theme-blue rounded-md p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-500"
               title="Remove file"
               onClick={onRemove}
+              disabled={isImporting}
             >
               <XMarkIcon className="h-6 w-6" />
             </button>
@@ -182,14 +205,21 @@ export const ResumeDropzone = ({
                   type="button"
                   className="btn-primary"
                   onClick={onImportClick}
+                  disabled={isImporting}
                 >
-                  Import and Continue <span aria-hidden="true">→</span>
+                  {isImporting ? "正在导入…" : "新增简历并继续"}{" "}
+                  <span aria-hidden="true">→</span>
                 </button>
               )}
               <p className={cx(" text-gray-500", !playgroundView && "mt-6")}>
                 Note: {!playgroundView ? "Import" : "Parser"} works best on
                 single column resume
               </p>
+              {importError && (
+                <p role="alert" className="mt-3 text-sm text-red-600">
+                  {importError}
+                </p>
+              )}
             </>
           )}
         </div>

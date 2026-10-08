@@ -12,6 +12,8 @@ const config = {
   // setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
 
   testEnvironment: "jest-environment-jsdom",
+  // 排除构建副本，避免 standalone/package.json 与根包冲突。
+  modulePathIgnorePatterns: ["<rootDir>/.next/"],
 };
 
 // createJestConfig is exported this way to ensure that next/jest can load the Next.js config which is async

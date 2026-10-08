@@ -8,6 +8,7 @@
 # testing
 /coverage
 /.playwright-cli/
+/output/playwright/
 /tmp/pdfs/
 
 # next.js

@@ -4,56 +4,19 @@ import {
   useSelector,
   type TypedUseSelectorHook,
 } from "react-redux";
-import { store, type RootState, type AppDispatch } from "lib/redux/store";
-import {
-  loadStateFromLocalStorage,
-  saveStateToLocalStorage,
-} from "lib/redux/local-storage";
-import { initialResumeState, setResume } from "lib/redux/resumeSlice";
-import {
-  initialSettings,
-  setSettings,
-  type Settings,
-} from "lib/redux/settingsSlice";
-import { deepMerge } from "lib/deep-merge";
-import type { Resume } from "lib/redux/types";
+import { type RootState, type AppDispatch } from "lib/redux/store";
+import { initializeCollection } from "lib/redux/collection-actions";
 
+/** 使用包含集合管理动作的应用 dispatch。 */
 export const useAppDispatch: () => AppDispatch = useDispatch;
+/** 保持已有表单的类型安全 selector 接口。 */
 export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
 
-/**
- * Hook to save store to local storage on store change
- */
-export const useSaveStateToLocalStorageOnChange = () => {
-  useEffect(() => {
-    const unsubscribe = store.subscribe(() => {
-      saveStateToLocalStorage(store.getState());
-    });
-    return unsubscribe;
-  }, []);
-};
-
+/** 客户端初始化一次；自动保存由 store 中间件在读取完成后负责。 */
 export const useSetInitialStore = () => {
+  // 依赖 Provider 注入的 store，便于独立测试和复用。
   const dispatch = useAppDispatch();
   useEffect(() => {
-    const state = loadStateFromLocalStorage();
-    if (!state) return;
-    if (state.resume) {
-      // We merge the initial state with the stored state to ensure
-      // backward compatibility, since new fields might be added to
-      // the initial state over time.
-      const mergedResumeState = deepMerge(
-        initialResumeState,
-        state.resume
-      ) as Resume;
-      dispatch(setResume(mergedResumeState));
-    }
-    if (state.settings) {
-      const mergedSettingsState = deepMerge(
-        initialSettings,
-        state.settings
-      ) as Settings;
-      dispatch(setSettings(mergedSettingsState));
-    }
-  }, []);
+    dispatch(initializeCollection());
+  }, [dispatch]);
 };

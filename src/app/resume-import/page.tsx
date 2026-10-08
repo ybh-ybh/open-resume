@@ -49,7 +49,7 @@ export default function ImportResume() {
               </>
             )}
             <h1 className="font-semibold text-gray-900">
-              Override data with a new resume
+              导入一份新简历（保留已有简历）
             </h1>
             <ResumeDropzone
               onFileUrlChange={onFileUrlChange}

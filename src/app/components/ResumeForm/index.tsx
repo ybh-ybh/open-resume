@@ -1,10 +1,7 @@
 "use client";
 import { useState } from "react";
-import {
-  useAppSelector,
-  useSaveStateToLocalStorageOnChange,
-  useSetInitialStore,
-} from "lib/redux/hooks";
+import { useAppSelector } from "lib/redux/hooks";
+import { ResumeManager, ResumeStorageNotice } from "components/ResumeManager";
 import { ShowForm, selectFormsOrder } from "lib/redux/settingsSlice";
 import { ProfileForm } from "components/ResumeForm/ProfileForm";
 import { WorkExperiencesForm } from "components/ResumeForm/WorkExperiencesForm";
@@ -25,9 +22,10 @@ const formTypeToComponent: { [type in ShowForm]: () => JSX.Element } = {
 };
 
 export const ResumeForm = () => {
-  useSetInitialStore();
-  useSaveStateToLocalStorageOnChange();
-
+  // 切换记录时重建表单局部状态及照片异步处理组件。
+  const activeResumeId = useAppSelector(
+    (state) => state.collection.activeResumeId
+  );
   const formsOrder = useAppSelector(selectFormsOrder);
   const [isHover, setIsHover] = useState(false);
 
@@ -40,14 +38,19 @@ export const ResumeForm = () => {
       onMouseOver={() => setIsHover(true)}
       onMouseLeave={() => setIsHover(false)}
     >
-      <section className="flex max-w-2xl flex-col gap-8 p-[var(--resume-padding)]">
-        <ProfileForm />
-        {formsOrder.map((form) => {
-          const Component = formTypeToComponent[form];
-          return <Component key={form} />;
-        })}
-        <ThemeForm />
-        <br />
+      <section className="flex w-full min-w-0 max-w-2xl flex-col gap-8 p-[var(--resume-padding)]">
+        <ResumeManager />
+        <ResumeStorageNotice />
+        <div key={activeResumeId} className="flex flex-col gap-8">
+          <ProfileForm />
+          {formsOrder.map((form) => {
+            // 根据当前简历独立保存的板块顺序渲染表单。
+            const Component = formTypeToComponent[form];
+            return <Component key={form} />;
+          })}
+          <ThemeForm />
+          <br />
+        </div>
       </section>
       <FlexboxSpacer maxWidth={50} className="hidden md:block" />
     </div>

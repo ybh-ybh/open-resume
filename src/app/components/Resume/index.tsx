@@ -11,6 +11,10 @@ import { useAppSelector } from "lib/redux/hooks";
 import { selectResume } from "lib/redux/resumeSlice";
 import { selectSettings } from "lib/redux/settingsSlice";
 import {
+  getActiveResume,
+  getResumeFileName,
+} from "lib/redux/resume-collection";
+import {
   useRegisterReactPDFFont,
   useRegisterReactPDFHyphenationCallback,
 } from "components/fonts/hooks";
@@ -24,6 +28,10 @@ export const Resume = () => {
   const resumeContainerRef = useRef<HTMLElement>(null);
   const resume = useAppSelector(selectResume);
   const settings = useAppSelector(selectSettings);
+  // 管理名称用于导出文件名，保持个人姓名只用于简历正文。
+  const resumeName = useAppSelector(
+    (state) => getActiveResume(state.collection).name
+  );
   const document = useMemo(
     () => <ResumePDF resume={resume} settings={settings} isPDF={true} />,
     [resume, settings]
@@ -54,7 +62,7 @@ export const Resume = () => {
             documentSize={settings.documentSize}
             resumeContainerRef={resumeContainerRef}
             document={document}
-            fileName={resume.profile.name + " - 简历"}
+            fileName={getResumeFileName(resumeName)}
             onPdfBlobChange={setPdfBlob}
           />
         </div>

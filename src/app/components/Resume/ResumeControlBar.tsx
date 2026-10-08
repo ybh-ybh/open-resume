@@ -38,6 +38,11 @@ const ResumeControlBar = ({
 
   const [instance, update] = usePDF({ document });
 
+  // 新实例无 URL；生成中或失败时旧 URL 也不得用于下载。
+  const canDownload = Boolean(
+    instance.url && !instance.loading && !instance.error
+  );
+
   // Hook to update pdf when document changes
   useEffect(() => {
     update();
@@ -78,16 +83,21 @@ const ResumeControlBar = ({
       </div>
       <a
         className={`ml-1 flex items-center gap-1 rounded-md border border-gray-300 px-3 py-0.5 lg:ml-8 ${
-          instance.url
-            ? "hover:bg-gray-100"
-            : "pointer-events-none opacity-50"
+          canDownload ? "hover:bg-gray-100" : "pointer-events-none opacity-50"
         }`}
-        href={instance.url ?? undefined}
+        href={canDownload ? instance.url ?? undefined : undefined}
         download={fileName}
-        aria-disabled={!instance.url}
+        aria-disabled={!canDownload}
+        tabIndex={canDownload ? 0 : -1}
       >
         <ArrowDownTrayIcon className="h-4 w-4" />
-        <span className="whitespace-nowrap">下载简历</span>
+        <span className="whitespace-nowrap">
+          {instance.error
+            ? "PDF 生成失败"
+            : canDownload
+            ? "下载简历"
+            : "正在生成…"}
+        </span>
       </a>
     </div>
   );
