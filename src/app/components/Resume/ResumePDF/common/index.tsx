@@ -263,12 +263,15 @@ export const ResumePDFSubsectionHeader = ({
   date,
   themeColor,
   titleFontSize = "10.5pt",
+  titleColor = resumeColors.ink,
 }: {
   title: string;
   subtitle?: string;
   date: string;
   themeColor: string;
   titleFontSize?: string;
+  /** 仅覆盖标题文字颜色，不改变职位、日期或章节主题色。 */
+  titleColor?: string;
 }) => (
   <View
     wrap={false}
@@ -283,7 +286,7 @@ export const ResumePDFSubsectionHeader = ({
     <View style={{ ...styles.flexRow, alignItems: "baseline", flexGrow: 1 }}>
       <ResumePDFText
         bold={true}
-        style={{ color: resumeColors.ink, fontSize: titleFontSize }}
+        style={{ color: titleColor, fontSize: titleFontSize }}
       >
         {title}
       </ResumePDFText>

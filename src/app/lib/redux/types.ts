@@ -21,6 +21,8 @@ export interface ResumeProfile {
 
 export interface ResumeWorkExperience {
   company: string;
+  /** 公司名称颜色，旧简历未设置时使用黑色。 */
+  companyColor?: string;
   jobTitle: string;
   date: string;
   descriptions: string[];

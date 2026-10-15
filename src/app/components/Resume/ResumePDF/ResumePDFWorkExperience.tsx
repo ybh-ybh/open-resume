@@ -24,29 +24,35 @@ export const ResumePDFWorkExperience = ({
 }) => (
   <ResumePDFSection themeColor={themeColor} heading={heading}>
     <View style={{ ...styles.flexCol }}>
-      {workExperiences.map(({ company, jobTitle, date, descriptions }, idx) => (
-        <View
-          key={idx}
-          style={{
-            paddingBottom:
-              idx < workExperiences.length - 1
-                ? getSafeSpacingInPt(
-                    workExperienceSpacing,
-                    DEFAULT_WORK_EXPERIENCE_SPACING
-                  )
-                : 0,
-          }}
-        >
-          <ResumePDFSubsectionHeader
-            title={company}
-            subtitle={jobTitle}
-            date={date}
-            themeColor={themeColor}
-            titleFontSize={`${bodyFontSize}pt`}
-          />
-          <ResumePDFBulletList items={descriptions} bulletColor={themeColor} />
-        </View>
-      ))}
+      {workExperiences.map(
+        ({ company, companyColor, jobTitle, date, descriptions }, idx) => (
+          <View
+            key={idx}
+            style={{
+              paddingBottom:
+                idx < workExperiences.length - 1
+                  ? getSafeSpacingInPt(
+                      workExperienceSpacing,
+                      DEFAULT_WORK_EXPERIENCE_SPACING
+                    )
+                  : 0,
+            }}
+          >
+            <ResumePDFSubsectionHeader
+              title={company}
+              subtitle={jobTitle}
+              date={date}
+              themeColor={themeColor}
+              titleFontSize={`${bodyFontSize}pt`}
+              titleColor={companyColor || "#000000"}
+            />
+            <ResumePDFBulletList
+              items={descriptions}
+              bulletColor={themeColor}
+            />
+          </View>
+        )
+      )}
     </View>
   </ResumePDFSection>
 );

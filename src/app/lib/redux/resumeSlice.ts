@@ -27,6 +27,8 @@ export const initialProfile: ResumeProfile = {
 
 export const initialWorkExperience: ResumeWorkExperience = {
   company: "",
+  // 新增工作经历的公司名称默认使用黑色。
+  companyColor: "#000000",
   jobTitle: "",
   date: "",
   descriptions: [],
