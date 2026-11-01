@@ -10,6 +10,7 @@ import { createPortal } from "react-dom";
 import {
   CheckIcon,
   ChevronDownIcon,
+  ClipboardDocumentIcon,
   DocumentDuplicateIcon,
   PencilIcon,
   PlusIcon,
@@ -82,6 +83,10 @@ export const ResumeManager = () => {
   const [dialogMode, setDialogMode] = useState<DialogMode | null>(null);
   // 名称输入保留到用户确认或取消。
   const [name, setName] = useState("");
+  // 剪贴板操作状态独立于简历管理和保存状态。
+  const [copyStatus, setCopyStatus] = useState<
+    "idle" | "copying" | "copied" | "error"
+  >("idle");
   // 菜单触发按钮也是弹窗关闭后的焦点恢复位置。
   const triggerRef = useRef<HTMLButtonElement>(null);
   // 下拉菜单区域用于外部点击和键盘导航。
@@ -94,6 +99,45 @@ export const ResumeManager = () => {
   const nameRef = useRef<HTMLInputElement>(null);
   // 删除确认默认聚焦取消按钮，避免意外删除。
   const cancelRef = useRef<HTMLButtonElement>(null);
+
+  /** 复制当前内存中的全部文字内容，避免照片编码占用模型上下文。 */
+  const handleCopyJson = async () => {
+    setCopyStatus("copying");
+    try {
+      // 保留全部板块和自定义标题，不按预览中的可见性过滤内容。
+      const json = JSON.stringify(
+        {
+          name: active.name,
+          ...active.resume,
+          profile: {
+            ...active.resume.profile,
+            photo: active.resume.profile.photo
+              ? "已上传照片（不包含图片数据）"
+              : "",
+          },
+          sectionHeadings: active.settings.formToHeading,
+        },
+        null,
+        2
+      );
+      await navigator.clipboard.writeText(json);
+      setCopyStatus("copied");
+    } catch {
+      setCopyStatus("error");
+    }
+  };
+
+  useEffect(() => {
+    // 编辑或切换简历后清除上一份内容的复制结果。
+    setCopyStatus("idle");
+  }, [active]);
+
+  useEffect(() => {
+    if (copyStatus !== "copied") return;
+    // 成功提示保留四秒，再次复制或离开组件时清理旧计时器。
+    const timer = window.setTimeout(() => setCopyStatus("idle"), 4000);
+    return () => window.clearTimeout(timer);
+  }, [copyStatus]);
 
   /** 关闭弹窗并恢复菜单触发按钮的焦点。 */
   const closeDialog = () => {
@@ -217,27 +261,60 @@ export const ResumeManager = () => {
       <div className="mb-2 text-sm font-medium text-gray-500">
         我的简历 · {collection.resumes.length} 份
       </div>
-      <button
-        ref={triggerRef}
-        type="button"
-        aria-haspopup="menu"
-        aria-expanded={menuOpen}
-        aria-controls="resume-menu"
-        onClick={() => setMenuOpen(!menuOpen)}
-        onKeyDown={(event) => {
-          if (event.key === "ArrowDown" || event.key === "ArrowUp") {
-            event.preventDefault();
-            setMenuOpen(true);
-          }
-        }}
-        className="flex w-full items-center justify-between gap-3 rounded-md border border-gray-300 bg-white px-3 py-2 text-left font-semibold text-gray-900 shadow-sm hover:bg-gray-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-sky-500"
-      >
-        <span className="truncate">{active.name}</span>
-        <ChevronDownIcon
-          className="h-5 w-5 shrink-0 text-gray-500"
-          aria-hidden="true"
-        />
-      </button>
+      <div className="flex items-stretch gap-2">
+        <button
+          ref={triggerRef}
+          type="button"
+          aria-haspopup="menu"
+          aria-expanded={menuOpen}
+          aria-controls="resume-menu"
+          onClick={() => setMenuOpen(!menuOpen)}
+          onKeyDown={(event) => {
+            if (event.key === "ArrowDown" || event.key === "ArrowUp") {
+              event.preventDefault();
+              setMenuOpen(true);
+            }
+          }}
+          className="flex min-w-0 flex-1 items-center justify-between gap-3 rounded-md border border-gray-300 bg-white px-3 py-2 text-left font-semibold text-gray-900 shadow-sm hover:bg-gray-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-sky-500"
+        >
+          <span className="truncate">{active.name}</span>
+          <ChevronDownIcon
+            className="h-5 w-5 shrink-0 text-gray-500"
+            aria-hidden="true"
+          />
+        </button>
+        <button
+          type="button"
+          aria-label="复制当前简历为 JSON"
+          title="复制全部简历文字为 JSON，照片仅保留上传标记"
+          onClick={handleCopyJson}
+          disabled={copyStatus === "copying"}
+          className={`flex w-28 shrink-0 items-center justify-center gap-1.5 whitespace-nowrap rounded-md border px-3 py-2 text-sm font-medium shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-sky-500 disabled:opacity-50 ${
+            copyStatus === "copied"
+              ? "border-green-600 bg-green-600 text-white hover:bg-green-700"
+              : "border-gray-300 bg-white text-gray-700 hover:bg-gray-50"
+          }`}
+        >
+          {copyStatus === "copied" ? (
+            <CheckIcon className="h-4 w-4" aria-hidden="true" />
+          ) : (
+            <ClipboardDocumentIcon className="h-4 w-4" aria-hidden="true" />
+          )}
+          {copyStatus === "copying"
+            ? "复制中…"
+            : copyStatus === "copied"
+            ? "已复制"
+            : "复制 JSON"}
+        </button>
+      </div>
+      <div role="status" aria-live="polite" className="text-sm">
+        {copyStatus === "copied" && <span className="sr-only">已复制</span>}
+        {copyStatus === "error" && (
+          <p className="mt-2 text-red-600">
+            复制失败，请检查浏览器剪贴板权限后重试。
+          </p>
+        )}
+      </div>
       {menuOpen && (
         <div
           id="resume-menu"
